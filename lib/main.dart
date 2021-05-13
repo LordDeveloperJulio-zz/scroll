@@ -13,16 +13,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -30,13 +26,19 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Size? size;
 
+  int changeSize(){
+    if(size == null){
+      return 0;
+    }
+    return ((size!.height + AppBar().preferredSize.height + MediaQuery.of(context).padding.top) + (MediaQuery.of(context).size.height * 0.065 + 20)).round();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'size = ${((size!.height + AppBar().preferredSize.height + MediaQuery.of(context).padding.top) + (MediaQuery.of(context).size.height * 0.065 + 20)).round()}' +
-              " : ${MediaQuery.of(context).size.height.round()}",
+          'size = ${changeSize()}' + " : ${MediaQuery.of(context).size.height.round()}",
         ),
       ),
       body: SingleChildScrollView(
@@ -49,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: ListView.builder(
               physics: ClampingScrollPhysics(),
               shrinkWrap: true,
-              itemCount: 12,
+              itemCount: 11,
               itemBuilder: (_, index) => ListTile(
                     title: Text("index: $index"),
                   )),
