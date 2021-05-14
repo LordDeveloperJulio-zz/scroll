@@ -26,20 +26,72 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Size? size;
 
-  int changeSize(){
-    if(size == null){
+  int countPlus = 0;
+
+  bool sizeScreen = false;
+
+  int tamanhoDatela = 0;
+
+  int changeSize() {
+    if (size == null) {
       return 0;
     }
-    return ((size!.height + AppBar().preferredSize.height + MediaQuery.of(context).padding.top) + (MediaQuery.of(context).size.height * 0.065 + 20)).round();
+    if (((size!.height +
+                AppBar().preferredSize.height +
+                MediaQuery.of(context).padding.top) +
+            (MediaQuery.of(context).size.height * 0.065 + 20)) >=
+        tamanhoDatela) {
+      sizeScreen = true;
+    } else {
+      sizeScreen = false;
+    }
+
+    return ((size!.height +
+                AppBar().preferredSize.height +
+                MediaQuery.of(context).padding.top) +
+            (MediaQuery.of(context).size.height * 0.065 + 20))
+        .round();
   }
 
   @override
   Widget build(BuildContext context) {
+    tamanhoDatela = MediaQuery.of(context).size.height.round();
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'size = ${changeSize()}' + " : ${MediaQuery.of(context).size.height.round()}",
+          'size = ${changeSize()}' +
+              " : ${MediaQuery.of(context).size.height.round()}",
         ),
+        actions: [
+          ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.resolveWith((states) => Colors.grey)),
+            onPressed: () {
+              setState(() {
+                countPlus -= 1;
+              });
+            },
+            child: Text(" - "),
+          ),
+          SizedBox(
+            width: 5,
+          ),
+          ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.resolveWith((states) => Colors.grey)),
+            onPressed: () {
+              setState(() {
+                countPlus += 1;
+              });
+            },
+            child: Text(" + "),
+          ),
+          SizedBox(
+            width: 5,
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: MeasuredSize(
@@ -51,25 +103,36 @@ class _MyHomePageState extends State<MyHomePage> {
           child: ListView.builder(
               physics: ClampingScrollPhysics(),
               shrinkWrap: true,
-              itemCount: 11,
+              itemCount: countPlus,
               itemBuilder: (_, index) => ListTile(
                     title: Text("index: $index"),
                   )),
         ),
       ),
-      bottomNavigationBar: Padding(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
-          child: Container(
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.height * 0.065,
-              child: RaisedButton(
-                color: Colors.blue,
-                child: Text(
-                  "Continuar",
-                  style: TextStyle(color: Colors.white),
+      bottomNavigationBar: Container(
+          padding: EdgeInsets.symmetric(horizontal: 30),
+          decoration: BoxDecoration(
+            border: Border(
+                top: BorderSide(
+              color: sizeScreen == true ? Colors.grey : Colors.transparent,
+              width: 1,
+            )),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(10.0),
                 ),
-                onPressed: () {},
-              ))),
+              ),
+              child: Text(
+                "Continuar",
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () {},
+            ),
+          )),
     );
   }
 }
